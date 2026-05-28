@@ -23,15 +23,15 @@ class BasePage {
    * @param {string} path  e.g. '/' or '/inventory.html'
    */
   async goto(path = '/') {
-    await this.page.goto(path);
-  }
+  await this.page.goto(path, { waitUntil: 'domcontentloaded' });
+}
+  ;
 
   /**
    * Returns the current page title — useful for assertions.
    */
   async getTitle() {
-    return await this.page.title();
-  }
+    return await this.page.title()  };
 
   /**
    * Returns the current page URL — useful for assertions.
@@ -39,6 +39,7 @@ class BasePage {
   getCurrentUrl() {
     return this.page.url();
   }
-}
+};
+
 
 module.exports = { BasePage };

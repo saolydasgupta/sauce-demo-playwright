@@ -1,40 +1,50 @@
-const { test, expect } = require('@playwright/test');
-const { LoginPage } = require('../src/pages/LoginPage');
+const { BasePage } = require('./BasePage');
 
 /**
- * Sauce Demo - Login tests
+ * LoginPage — encapsulates the Sauce Demo login page.
  *
- * Demonstrates the Page Object Model:
- *   - Tests describe WHAT they do (intent)
- *   - LoginPage describes HOW it's done (implementation)
+ * This class knows:
+ *   - how to find every element on the login page
+ *   - how to perform every action a user can do
+ *
+ * Tests should NOT touch page elements directly. They use this class.
  */
-test.describe('Login', () => {
+class LoginPage extends BasePage {
 
-  let loginPage;
+  constructor(page) {
+    super(page);
 
-  test.beforeEach(async ({ page }) => {
-    loginPage = new LoginPage(page);
-    await loginPage.open();
-  });
+    this.usernameInput = page.getByPlaceholder('Username');
+    this.passwordInput = page.getByPlaceholder('Password');
+    this.loginButton = page.getByRole('button', { name: 'Login' });
+    this.errorMessage = page.locator('[data-test="error"]');
+  }
 
-  test('a standard user can log in successfully', async ({ page }) => {
-    await loginPage.login('standard_user', 'secret_sauce');
+  async open() {
+    await this.goto('/');
+  }
 
-    await expect(page).toHaveURL(/.*inventory.html/);
-    await expect(page.getByText('Products')).toBeVisible();
-  });
+  async enterUsername(username) {
+    await this.usernameInput.fill(username);
+  }
 
-  test('a locked-out user sees an error message', async () => {
-    await loginPage.login('locked_out_user', 'secret_sauce');
+  async enterPassword(password) {
+    await this.passwordInput.fill(password);
+  }
 
-    await expect(loginPage.errorMessage).toBeVisible();
-    await expect(loginPage.errorMessage).toContainText('locked out');
-  });
+  async clickLogin() {
+    await this.loginButton.click();
+  }
 
-  test('empty credentials show a validation error', async () => {
-    await loginPage.clickLogin();
+  async login(username, password) {
+    await this.enterUsername(username);
+    await this.enterPassword(password);
+    await this.clickLogin();
+  }
 
-    await expect(loginPage.errorMessage).toContainText('Username is required');
-  });
+  async getErrorMessage() {
+    return await this.errorMessage.textContent();
+  }
+}
 
-});
+module.exports = { LoginPage };

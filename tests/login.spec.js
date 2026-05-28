@@ -1,4 +1,5 @@
 const { test, expect } = require('@playwright/test');
+const { LoginPage } = require('../src/pages/LoginPage');
 
 /**
  * Sauce Demo - Login tests

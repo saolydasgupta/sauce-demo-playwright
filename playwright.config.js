@@ -7,62 +7,55 @@ const { defineConfig, devices } = require('@playwright/test');
  * Docs: https://playwright.dev/docs/test-configuration
  */
 module.exports = defineConfig({
-  // Folder where Playwright looks for test files
   testDir: './tests',
 
-  // Run all tests in parallel by default
+  // Run tests in files in parallel
   fullyParallel: true,
 
-  // Fail the build on CI if someone accidentally committed `test.only`
+  // Fail the build on CI if `test.only` was committed by mistake
   forbidOnly: !!process.env.CI,
 
-  // Retry failed tests on CI only.
-  // Locally, a failure is a real failure you should debug.
-  retries: process.env.CI ? 2 : 0,
+  // Retries: 2 on CI, 1 locally (handles transient network blips)
+  retries: process.env.CI ? 2 : 1,
 
-  // How many tests run in parallel.
-  // Limited on CI to avoid resource contention.
-  workers: process.env.CI ? 2 : undefined,
+  // Workers: limit parallelism so we don't overwhelm slow networks.
+  // 4 locally, 2 on CI.
+  workers: process.env.CI ? 2 : 4,
 
-  // Reporters: how results are displayed
+  // Reporters: HTML for browsing, list for terminal
   reporter: [
-    ['html', { open: 'never' }],   // generates playwright-report/ folder
-    ['list'],                      // pretty console output
+    ['html', { open: 'never' }],
+    ['list'],
   ],
 
-  // Global timeout per test (30 seconds is generous for UI tests)
-  timeout: 30 * 1000,
+  // Generous global timeout per test
+  timeout: 60 * 1000,
 
   // How long expect() assertions wait before failing
   expect: {
-    timeout: 5 * 1000,
+    timeout: 10 * 1000,
   },
 
   // Settings that apply to every test
   use: {
-    // Base URL — all page.goto() calls are relative to this
     baseURL: 'https://www.saucedemo.com',
 
-    // Capture trace on first retry — critical for debugging flaky CI runs
+    // Capture a full trace on first retry — gold for debugging
     trace: 'on-first-retry',
 
-    // Screenshot only when a test fails
+    // Screenshot and video only on failure (saves disk space)
     screenshot: 'only-on-failure',
-
-    // Record video only when a test fails
     video: 'retain-on-failure',
 
-    // Consistent viewport for predictable screenshots
+    // Consistent viewport for predictable rendering
     viewport: { width: 1280, height: 720 },
 
-    // How long to wait for navigation (page loads)
-    navigationTimeout: 10 * 1000,
-
-    // How long to wait for any single action (click, fill, etc.)
-    actionTimeout: 5 * 1000,
+    // More generous timeouts for slower networks
+    navigationTimeout: 30 * 1000,
+    actionTimeout: 15 * 1000,
   },
 
-  // Projects: run the same tests across multiple browsers
+  // Run the same tests across multiple browsers
   projects: [
     {
       name: 'chromium',
