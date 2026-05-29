@@ -1,4 +1,6 @@
 const { test, expect } = require('../src/fixtures/pages.fixture');
+const { createCustomer } = require('../src/data/customer.factory');
+const { createTrickyCustomer } = require('../src/data/customer.factory');
 
 /**
  * Sauce Demo - End-to-end checkout flow
@@ -8,6 +10,22 @@ const { test, expect } = require('../src/fixtures/pages.fixture');
  * inventoryPage fixture), so tests focus on the business journey itself.
  */
 test.describe('Checkout', () => {
+
+  test('checkout handles names with apostrophes and accented characters', async ({ inventoryPage, cartPage, checkoutPage, page }) => {
+  
+  const { firstName, lastName, postalCode } = createTrickyCustomer();
+
+  await inventoryPage.addProductToCart('Sauce Labs Backpack');
+  await inventoryPage.goToCart();
+  await cartPage.proceedToCheckout();
+
+  await checkoutPage.fillCustomerInformation(firstName, lastName, postalCode);
+  await checkoutPage.continueToOverview();
+  await checkoutPage.finishOrder();
+
+  await expect(page).toHaveURL(/.*checkout-complete/);
+  await expect(checkoutPage.confirmationHeader).toHaveText('Thank you for your order!');
+});
 
   test('a user can complete a purchase end-to-end', async ({ inventoryPage, cartPage, checkoutPage, page }) => {
     // Step 1: Add two products to the cart
@@ -29,7 +47,8 @@ test.describe('Checkout', () => {
     await expect(page).toHaveURL(/.*checkout-step-one/);
 
     // Step 4: Fill in customer info and continue
-    await checkoutPage.fillCustomerInformation('John', 'Doe', '12345');
+    const customer = createCustomer();
+    await checkoutPage.fillCustomerInformation(customer.firstName, customer.lastName, customer.postalCode);
     await checkoutPage.continueToOverview();
     await expect(page).toHaveURL(/.*checkout-step-two/);
 
