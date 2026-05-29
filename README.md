@@ -34,7 +34,7 @@ The framework currently covers **login, product browsing, cart management, and t
 - **Test categories**: happy path, negative tests, edge cases (e.g. names with apostrophes, accents)
 
 ## 📁 Project Structure
-
+```text
 sauce-demo-playwright/
 ├── src/
 │   ├── pages/              # Page Object Model classes
@@ -54,6 +54,7 @@ sauce-demo-playwright/
 ├── eslint.config.js        # Linting rules
 ├── playwright.config.js    # Playwright configuration
 └── package.json
+```
 
 ## 🏛 Architectural Decisions
 
