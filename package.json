@@ -12,7 +12,9 @@
     "test:debug": "playwright test --debug",
     "test:ui": "playwright test --ui",
     "report": "playwright show-report",
-    "codegen": "playwright codegen https://www.saucedemo.com"
+    "codegen": "playwright codegen https://www.saucedemo.com",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
   },
   "keywords": [
     "playwright",
@@ -24,8 +26,12 @@
   "author": "Saoly Das Gupta",
   "license": "ISC",
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
     "@faker-js/faker": "^10.4.0",
     "@playwright/test": "^1.50.0",
-    "@types/node": "^22.0.0"
+    "@types/node": "^22.0.0",
+    "eslint": "^10.4.1",
+    "eslint-plugin-playwright": "^2.10.4",
+    "globals": "^17.6.0"
   }
 }

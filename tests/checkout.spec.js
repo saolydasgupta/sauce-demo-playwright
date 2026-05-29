@@ -13,19 +13,19 @@ test.describe('Checkout', () => {
 
   test('checkout handles names with apostrophes and accented characters', async ({ inventoryPage, cartPage, checkoutPage, page }) => {
   
-  const { firstName, lastName, postalCode } = createTrickyCustomer();
+    const { firstName, lastName, postalCode } = createTrickyCustomer();
 
-  await inventoryPage.addProductToCart('Sauce Labs Backpack');
-  await inventoryPage.goToCart();
-  await cartPage.proceedToCheckout();
+    await inventoryPage.addProductToCart('Sauce Labs Backpack');
+    await inventoryPage.goToCart();
+    await cartPage.proceedToCheckout();
 
-  await checkoutPage.fillCustomerInformation(firstName, lastName, postalCode);
-  await checkoutPage.continueToOverview();
-  await checkoutPage.finishOrder();
+    await checkoutPage.fillCustomerInformation(firstName, lastName, postalCode);
+    await checkoutPage.continueToOverview();
+    await checkoutPage.finishOrder();
 
-  await expect(page).toHaveURL(/.*checkout-complete/);
-  await expect(checkoutPage.confirmationHeader).toHaveText('Thank you for your order!');
-});
+    await expect(page).toHaveURL(/.*checkout-complete/);
+    await expect(checkoutPage.confirmationHeader).toHaveText('Thank you for your order!');
+  });
 
   test('a user can complete a purchase end-to-end', async ({ inventoryPage, cartPage, checkoutPage, page }) => {
     // Step 1: Add two products to the cart

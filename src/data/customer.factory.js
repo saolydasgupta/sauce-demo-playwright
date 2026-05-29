@@ -32,8 +32,8 @@ function createCustomer(overrides = {}) {
  */
 function createTrickyCustomer(overrides = {}) {
   return {
-    firstName: `Marie-Claire`,
-    lastName: `O'Sullivan-Müller`,
+    firstName: 'Marie-Claire',
+    lastName: 'O\'Sullivan-Müller',
     postalCode: faker.location.zipCode(),
     ...overrides,
   };
