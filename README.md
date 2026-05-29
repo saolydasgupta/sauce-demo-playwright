@@ -104,7 +104,7 @@ This codebase contains **zero `waitForTimeout` calls**, enforced by ESLint:
 'playwright/no-wait-for-timeout': 'error'
 ```
 
-## 🚀 Getting Started
+##  Getting Started
 
 ### Prerequisites
 - Node.js 18 or later
@@ -151,7 +151,7 @@ npm run lint
 npm run lint:fix
 ```
 
-## 📊 Test Coverage
+##  Test Coverage
 
 Current coverage spans three main areas:
 
@@ -174,7 +174,7 @@ Planned additions to deepen this portfolio:
 - [ ] **Dockerised test runs** for environment consistency
 - [ ] **Allure reporting** for richer test analytics
 
-## 👋 About this Project
+##  About this Project
 
 Built as a portfolio piece to demonstrate the architectural choices and engineering discipline I'd bring to a real automation role. Open to feedback, suggestions, and conversation about anything in here — feel free to open an issue or get in touch.
 
