@@ -1,41 +1,25 @@
-
-const { test, expect } = require('@playwright/test');
-const { LoginPage } = require('../src/pages/LoginPage');
-const { InventoryPage } = require('../src/pages/InventoryPage');
+const { test, expect } = require('../src/fixtures/pages.fixture');
 
 /**
  * Sauce Demo - Inventory page tests
  *
- * Covers:
- *   - Page loads with expected content
- *   - Sort dropdown changes product order
- *   - Adding/removing products updates the cart badge
+ * Uses the custom `inventoryPage` fixture, which logs in as standard_user
+ * and lands on the inventory page before each test.
  */
 test.describe('Inventory', () => {
 
-  let loginPage;
-  let inventoryPage;
-
-  test.beforeEach(async ({ page }) => {
-    loginPage = new LoginPage(page);
-    inventoryPage = new InventoryPage(page);
-
-    await loginPage.open();
-    await loginPage.login('standard_user', 'secret_sauce');
-  });
-
-  test('inventory page displays exactly 6 products', async () => {
+  test('inventory page displays exactly 6 products', async ({ inventoryPage }) => {
     await expect(inventoryPage.pageTitle).toHaveText('Products');
     expect(await inventoryPage.getProductCount()).toBe(6);
   });
 
-  test('products are sorted A to Z by default', async () => {
+  test('products are sorted A to Z by default', async ({ inventoryPage }) => {
     const names = await inventoryPage.getProductNames();
-    const sortedNames = [...names].sort();   // a copy, sorted
+    const sortedNames = [...names].sort();
     expect(names).toEqual(sortedNames);
   });
 
-  test('sorting by price low-to-high reorders products', async () => {
+  test('sorting by price low-to-high reorders products', async ({ inventoryPage }) => {
     await inventoryPage.sortBy('lohi');
 
     const prices = await inventoryPage.getProductPrices();
@@ -43,7 +27,7 @@ test.describe('Inventory', () => {
     expect(prices).toEqual(sortedPrices);
   });
 
-  test('sorting by price high-to-low reorders products', async () => {
+  test('sorting by price high-to-low reorders products', async ({ inventoryPage }) => {
     await inventoryPage.sortBy('hilo');
 
     const prices = await inventoryPage.getProductPrices();
@@ -51,7 +35,7 @@ test.describe('Inventory', () => {
     expect(prices).toEqual(sortedPrices);
   });
 
-  test('adding a product updates the cart badge', async () => {
+  test('adding a product updates the cart badge', async ({ inventoryPage }) => {
     expect(await inventoryPage.getCartBadgeCount()).toBe(0);
 
     await inventoryPage.addProductToCart('Sauce Labs Backpack');
@@ -59,7 +43,7 @@ test.describe('Inventory', () => {
     expect(await inventoryPage.getCartBadgeCount()).toBe(1);
   });
 
-  test('adding multiple products updates the cart badge correctly', async () => {
+  test('adding multiple products updates the cart badge correctly', async ({ inventoryPage }) => {
     await inventoryPage.addProductToCart('Sauce Labs Backpack');
     await inventoryPage.addProductToCart('Sauce Labs Bike Light');
     await inventoryPage.addProductToCart('Sauce Labs Bolt T-Shirt');
@@ -67,7 +51,7 @@ test.describe('Inventory', () => {
     expect(await inventoryPage.getCartBadgeCount()).toBe(3);
   });
 
-  test('removing a product decreases the cart badge', async () => {
+  test('removing a product decreases the cart badge', async ({ inventoryPage }) => {
     await inventoryPage.addProductToCart('Sauce Labs Backpack');
     await inventoryPage.addProductToCart('Sauce Labs Bike Light');
     expect(await inventoryPage.getCartBadgeCount()).toBe(2);

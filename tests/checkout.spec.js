@@ -1,33 +1,15 @@
-const { test, expect } = require('@playwright/test');
-const { LoginPage } = require('../src/pages/LoginPage');
-const { InventoryPage } = require('../src/pages/InventoryPage');
-const { CartPage } = require('../src/pages/CartPage');
-const { CheckoutPage } = require('../src/pages/CheckoutPage');
+const { test, expect } = require('../src/fixtures/pages.fixture');
 
 /**
  * Sauce Demo - End-to-end checkout flow
  *
- * Demonstrates a complete purchase journey using all four page objects:
- *   Login → Inventory → Cart → Checkout → Confirmation
+ * Uses the `inventoryPage`, `cartPage`, and `checkoutPage` fixtures.
+ * The user is already logged in when each test starts (handled by the
+ * inventoryPage fixture), so tests focus on the business journey itself.
  */
 test.describe('Checkout', () => {
 
-  let loginPage;
-  let inventoryPage;
-  let cartPage;
-  let checkoutPage;
-
-  test.beforeEach(async ({ page }) => {
-    loginPage = new LoginPage(page);
-    inventoryPage = new InventoryPage(page);
-    cartPage = new CartPage(page);
-    checkoutPage = new CheckoutPage(page);
-
-    await loginPage.open();
-    await loginPage.login('standard_user', 'secret_sauce');
-  });
-
-  test('a user can complete a purchase end-to-end', async ({ page }) => {
+  test('a user can complete a purchase end-to-end', async ({ inventoryPage, cartPage, checkoutPage, page }) => {
     // Step 1: Add two products to the cart
     await inventoryPage.addProductToCart('Sauce Labs Backpack');
     await inventoryPage.addProductToCart('Sauce Labs Bike Light');
@@ -61,7 +43,7 @@ test.describe('Checkout', () => {
     await expect(checkoutPage.confirmationHeader).toHaveText('Thank you for your order!');
   });
 
-  test('checkout fails if first name is missing', async () => {
+  test('checkout fails if first name is missing', async ({ inventoryPage, cartPage, checkoutPage }) => {
     await inventoryPage.addProductToCart('Sauce Labs Backpack');
     await inventoryPage.goToCart();
     await cartPage.proceedToCheckout();
@@ -74,7 +56,7 @@ test.describe('Checkout', () => {
     await expect(checkoutPage.errorMessage).toContainText('First Name is required');
   });
 
-  test('user can remove an item from the cart before checkout', async () => {
+  test('user can remove an item from the cart before checkout', async ({ inventoryPage, cartPage }) => {
     await inventoryPage.addProductToCart('Sauce Labs Backpack');
     await inventoryPage.addProductToCart('Sauce Labs Bike Light');
     await inventoryPage.goToCart();
