@@ -1,0 +1,55 @@
+name: Playwright Tests
+
+# Run this workflow when:
+#  - Code is pushed to main
+#  - A pull request is opened against main
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+# How long the job can run before being killed (safety net)
+jobs:
+  test:
+    name: Run Playwright tests
+    timeout-minutes: 30
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Get the code onto the runner
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 2. Set up Node.js (matches what's on the developer's machine)
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      # 3. Install all npm dependencies (uses package-lock.json for reproducibility)
+      - name: Install dependencies
+        run: npm ci
+
+      # 4. Run the linter — fail fast if code quality is broken
+      - name: Run ESLint
+        run: npm run lint
+
+      # 5. Install Playwright browsers (Chromium, Firefox, WebKit)
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps
+
+      # 6. Run the full test suite across all configured browsers
+      - name: Run Playwright tests
+        run: npx playwright test
+
+      # 7. Upload the HTML report so we can download and view it after the run
+      - name: Upload Playwright report
+        # Run this step even if tests failed — that's when we most want the report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 14
