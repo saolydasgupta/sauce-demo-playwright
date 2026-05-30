@@ -1,5 +1,7 @@
 # Sauce Demo — Playwright Test Automation Framework
 
+[![Playwright Tests](https://github.com/saolydasgupta/sauce-demo-playwright/actions/workflows/playwright.yml/badge.svg)](https://github.com/saolydasgupta/sauce-demo-playwright/actions/workflows/playwright.yml)
+
 > A portfolio-grade end-to-end test automation framework built with **Playwright** and **JavaScript**, testing the [Sauce Demo](https://www.saucedemo.com) e-commerce site.
 > Demonstrates Page Object Model, custom fixtures, test data factories, and code quality enforcement — the patterns I'd use in a real production test suite.
 
@@ -170,7 +172,7 @@ Planned additions to deepen this portfolio:
 - [ ] **API testing layer** — combine UI + API for faster setup
 - [ ] **Visual regression** with screenshot comparisons
 - [ ] **Accessibility checks** via `@axe-core/playwright`
-- [ ] **GitHub Actions CI/CD** pipeline
+- [x ] **GitHub Actions CI/CD** pipeline ✅
 - [ ] **Dockerised test runs** for environment consistency
 - [ ] **Allure reporting** for richer test analytics
 
