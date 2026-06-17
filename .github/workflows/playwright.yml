@@ -9,6 +9,8 @@ on:
   pull_request:
     branches: [main]
   workflow_dispatch:
+  schedule:
+    - cron: '0 6 * * *'
 
 # How long the job can run before being killed (safety net)
 jobs:
